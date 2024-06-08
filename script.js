@@ -1,19 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const canvas = document.getElementById('visualization');
+  const canvas = document.getElementById('visualizer');
   const ctx = canvas.getContext('2d');
-
-  // Set canvas dimensions
-  canvas.width = window.innerWidth * 0.8;
-  canvas.height = window.innerHeight * 0.8;
-
   let audioContext;
   let analyser;
   let bufferLength;
-
-  // Create gradient for visualization
-  const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-  gradient.addColorStop(0, '#00ccff');
-  gradient.addColorStop(1, '#004466');
 
   // Initialize audio context and analyzer
   async function initAudio() {
@@ -42,14 +32,20 @@ document.addEventListener('DOMContentLoaded', () => {
     let x = 0;
     for (let i = 0; i < bufferLength; i++) {
       const barHeight = dataArray[i] / 2;
-      ctx.fillStyle = gradient;
+      ctx.fillStyle = `rgb(${barHeight + 100}, 50, 50)`;
       ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
       x += barWidth + 1;
     }
   }
 
   // Start audio processing and visualization
-  initAudio().then(() => {
+  document.getElementById('start-btn').addEventListener('click', async () => {
+    await initAudio();
     render();
+  });
+
+  // Stop audio processing
+  document.getElementById('stop-btn').addEventListener('click', () => {
+    audioContext.close();
   });
 });
