@@ -13,12 +13,9 @@ button {
   cursor: pointer;
 }
 
-#visualization {
+#visualizationCanvas {
   width: 300px;
-  height: auto;
+  height: 100px;
   border: 1px solid #ccc;
   margin-top: 20px;
-  padding: 10px;
-  overflow-y: scroll;
-  max-height: 300px;
 }
