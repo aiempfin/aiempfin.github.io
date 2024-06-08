@@ -23,17 +23,37 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  // Render visualization based on audio input
+  function render() {
+    // Get frequency data
+    const dataArray = new Uint8Array(bufferLength);
+    analyser.getByteTimeDomainData(dataArray);
+
+    // Calculate average volume
+    let volume = 0;
+    for (let i = 0; i < bufferLength; i++) {
+      volume += Math.abs(dataArray[i] - 128);
+    }
+    volume /= bufferLength;
+
+    // Adjust microphone size based on volume
+    const scaleFactor = 1 + volume / 128;
+    microphone.style.transform = `scale(${scaleFactor})`;
+
+    // Call render function again
+    requestAnimationFrame(render);
+  }
+
   // Start audio processing
   document.getElementById('start-btn').addEventListener('click', async () => {
     await initAudio();
-    microphone.classList.add('bounce');
+    render();
   });
 
   // Stop audio processing
   document.getElementById('stop-btn').addEventListener('click', () => {
     if (audioContext) {
       audioContext.close();
-      microphone.classList.remove('bounce');
     }
   });
 });
