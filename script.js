@@ -1,6 +1,7 @@
 const startButton = document.getElementById('startButton');
 const visualizationCanvas = document.getElementById('visualizationCanvas');
 const canvasCtx = visualizationCanvas.getContext('2d');
+const transcriptDisplay = document.getElementById('transcriptDisplay'); // Added
 let audioContext;
 let analyser;
 let bufferLength;
@@ -80,15 +81,8 @@ function startSpeechRecognition() {
   recognition.onresult = (event) => {
     const transcript = event.results[0][0].transcript;
     console.log('Transcript:', transcript);
-    displayTranscript(transcript);
+    transcriptDisplay.textContent = transcript; // Update transcript display
   };
 
   recognition.start();
-}
-
-function displayTranscript(transcript) {
-  // Display transcript in some element
-  // For example:
-  const transcriptDisplay = document.getElementById('transcriptDisplay');
-  transcriptDisplay.textContent = transcript;
 }
