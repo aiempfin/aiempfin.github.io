@@ -20,32 +20,33 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // Render visualization based on audio input
+  // Render circular waveform visualization based on audio input
   function render() {
     // Get frequency data
     const dataArray = new Uint8Array(bufferLength);
-    analyser.getByteTimeDomainData(dataArray);
+    analyser.getByteFrequencyData(dataArray);
 
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw robotic waveform visualization
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = '#00ccff';
-    ctx.beginPath();
-    const sliceWidth = canvas.width / bufferLength;
-    let x = 0;
+    // Draw circular waveform visualization
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const maxRadius = Math.min(centerX, centerY);
+    const sliceAngle = (Math.PI * 2) / bufferLength;
+    const lineWidth = 4;
+
     for (let i = 0; i < bufferLength; i++) {
       const v = dataArray[i] / 128.0;
-      const y = (v * canvas.height) / 2;
-      if (i === 0) {
-        ctx.moveTo(x, y);
-      } else {
-        ctx.lineTo(x, y);
-      }
-      x += sliceWidth;
+      const radius = maxRadius * (v / 2);
+      const angle = sliceAngle * i;
+
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, angle, angle + sliceAngle);
+      ctx.strokeStyle = `rgba(0, 204, 255, ${1 - i / bufferLength})`;
+      ctx.lineWidth = lineWidth;
+      ctx.stroke();
     }
-    ctx.stroke();
 
     // Call render function again
     requestAnimationFrame(render);
