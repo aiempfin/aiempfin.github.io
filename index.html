@@ -3,17 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Siri-like 3D Voice Visualization</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Real-Time 3D Audio Visualization</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+    #visualization {
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <div id="visualization" class="siri"></div>
-    <div class="controls">
-      <button id="start-btn">Start</button>
-      <button id="stop-btn">Stop</button>
-    </div>
-  </div>
+  <div id="visualization"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
