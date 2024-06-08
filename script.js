@@ -25,6 +25,9 @@ startButton.addEventListener('click', () => {
 
   // Start drawing waveform
   drawWaveform();
+
+  // Start speech recognition
+  startSpeechRecognition();
 });
 
 function drawWaveform() {
@@ -66,4 +69,26 @@ function drawWaveform() {
   }
 
   draw();
+}
+
+function startSpeechRecognition() {
+  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  recognition.lang = 'en-US';
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    console.log('Transcript:', transcript);
+    displayTranscript(transcript);
+  };
+
+  recognition.start();
+}
+
+function displayTranscript(transcript) {
+  // Display transcript in some element
+  // For example:
+  const transcriptDisplay = document.getElementById('transcriptDisplay');
+  transcriptDisplay.textContent = transcript;
 }
