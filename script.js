@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', async () => {
   // Import required classes from Three.js library
-  const { Scene, PerspectiveCamera, WebGLRenderer, SphereGeometry, Mesh, ShaderMaterial, Clock } = THREE;
+  const { Scene, PerspectiveCamera, WebGLRenderer, SphereGeometry, Mesh, ShaderMaterial } = THREE;
 
   // Setup scene, camera, and renderer
   const scene = new Scene();
@@ -15,10 +15,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   const material = new ShaderMaterial({
     vertexShader: `
       varying vec3 vNormal;
+      uniform float displacement;
 
       void main() {
-        vNormal = normalize(normalMatrix * normal);
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        vNormal = normal;
+        vec3 newPosition = position + normal * displacement;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
       }
     `,
     fragmentShader: `
@@ -26,14 +28,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       uniform vec3 color;
 
       void main() {
-        float intensity = pow(0.5 - dot(vNormal, vec3(0.0, 0.0, 0.5)), 1.0);
+        float intensity = abs(dot(vNormal, vec3(0.0, 0.0, 1.0)));
         gl_FragColor = vec4(color * intensity, 1.0);
       }
     `,
     uniforms: {
-      color: { value: new THREE.Color(0x00ff00) }
-    },
-    wireframe: true
+      color: { value: new THREE.Color(0x00ff00) },
+      displacement: { value: 0 }
+    }
   });
   const globe = new Mesh(geometry, material);
   scene.add(globe);
@@ -56,23 +58,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  const clock = new Clock();
-
   // Function to animate the globe based on audio input
   function animate() {
     requestAnimationFrame(animate);
-
-    const time = clock.getElapsedTime();
-
-    const intensity = Math.sin(time * 2.0) * 0.5 + 0.5;
 
     // Get frequency data
     const dataArray = new Uint8Array(bufferLength);
     analyser.getByteFrequencyData(dataArray);
 
-    // Modify globe color intensity based on audio data
+    // Modify globe displacement based on audio data
     const averageVolume = dataArray.reduce((acc, val) => acc + val, 0) / bufferLength;
-    material.uniforms.color.value.set(0x00ff00 + intensity * 0xff0000 + averageVolume * 10);
+    material.uniforms.displacement.value = averageVolume / 20;
 
     renderer.render(scene, camera);
   }
