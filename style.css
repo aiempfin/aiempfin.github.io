@@ -1,26 +1,6 @@
-body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-  background-color: #f0f0f0;
-}
-
-#siri {
-  width: 200px;
-  height: 200px;
-  background-color: #b3e0ff;
-  border-radius: 50%;
-  animation: pulse 1s infinite alternate;
-  animation-play-state: paused; /* Initially paused */
-}
-
-@keyframes pulse {
-  from {
-    transform: scale(1);
-  }
-  to {
-    transform: scale(1.2);
-  }
+canvas {
+    background-color: #000;
+    display: block;
+    margin: auto;
+    margin-top: 50px;
 }
