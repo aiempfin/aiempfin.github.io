@@ -1,46 +1,18 @@
 document.addEventListener('DOMContentLoaded', async () => {
-  // Import required classes from Three.js library
-  const { Scene, PerspectiveCamera, WebGLRenderer, SphereGeometry, Mesh, ShaderMaterial } = THREE;
-
-  // Setup scene, camera, and renderer
-  const scene = new Scene();
-  const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-  camera.position.z = 20;
-  const renderer = new WebGLRenderer();
+  // Setup Three.js scene, camera, renderer, etc.
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer();
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.getElementById('visualization').appendChild(renderer.domElement);
 
-  // Create a sphere geometry (globe)
-  const geometry = new SphereGeometry(10, 64, 64);
-  const material = new ShaderMaterial({
-    vertexShader: `
-      varying vec3 vNormal;
-      uniform float displacement;
+  // Create a sphere
+  const geometry = new THREE.SphereGeometry(5, 32, 32);
+  const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+  const sphere = new THREE.Mesh(geometry, material);
+  scene.add(sphere);
 
-      void main() {
-        vNormal = normal;
-        vec3 newPosition = position + normal * displacement;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
-      }
-    `,
-    fragmentShader: `
-      varying vec3 vNormal;
-      uniform vec3 color;
-
-      void main() {
-        float intensity = abs(dot(vNormal, vec3(0.0, 0.0, 1.0)));
-        gl_FragColor = vec4(color * intensity, 1.0);
-      }
-    `,
-    uniforms: {
-      color: { value: new THREE.Color(0x00ff00) },
-      displacement: { value: 0 }
-    }
-  });
-  const globe = new Mesh(geometry, material);
-  scene.add(globe);
-
-  // Setup audio context and analyzer
+  // Setup audio context and analyser
   let audioContext;
   let analyser;
   const bufferLength = 256;
@@ -58,17 +30,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // Function to animate the globe based on audio input
+  // Function to animate the sphere based on audio input
   function animate() {
     requestAnimationFrame(animate);
 
-    // Get frequency data
+    // Get frequency data from analyser
     const dataArray = new Uint8Array(bufferLength);
     analyser.getByteFrequencyData(dataArray);
 
-    // Modify globe displacement based on audio data
+    // Modify sphere scale based on audio data
     const averageVolume = dataArray.reduce((acc, val) => acc + val, 0) / bufferLength;
-    material.uniforms.displacement.value = averageVolume / 20;
+    sphere.scale.set(1 + averageVolume / 100, 1 + averageVolume / 100, 1 + averageVolume / 100);
 
     renderer.render(scene, camera);
   }
