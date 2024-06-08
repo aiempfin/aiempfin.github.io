@@ -21,7 +21,6 @@ function connectStream(stream) {
     analyser = audioContext.createAnalyser();
     const source = audioContext.createMediaStreamSource(stream);
     source.connect(analyser);
-    analyser.smoothingTimeConstant = 0.5;
     analyser.fftSize = 32;
 
     initRenderLoop();
