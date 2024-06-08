@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const microphone = document.createElement('div');
   microphone.classList.add('microphone');
   visualization.appendChild(microphone);
-  
+
   let audioContext;
   let analyser;
   let bufferLength;
