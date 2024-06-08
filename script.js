@@ -1,9 +1,9 @@
 window.onload = function() {
-    // Set up audio context
+    const canvas = document.getElementById('visualizer');
+    const canvasCtx = canvas.getContext('2d');
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
     const analyser = audioContext.createAnalyser();
 
-    // Get microphone input
     navigator.mediaDevices.getUserMedia({ audio: true })
         .then(function(stream) {
             const microphone = audioContext.createMediaStreamSource(stream);
@@ -14,16 +14,10 @@ window.onload = function() {
             console.error('Error accessing microphone:', err);
         });
 
-    // Function to visualize microphone input
     function visualize() {
-        const canvas = document.getElementById('visualizer');
-        const canvasCtx = canvas.getContext('2d');
-
-        // Set canvas dimensions
         const WIDTH = canvas.width;
         const HEIGHT = canvas.height;
 
-        // Set up visualization
         analyser.fftSize = 2048;
         const bufferLength = analyser.frequencyBinCount;
         const dataArray = new Uint8Array(bufferLength);
@@ -40,7 +34,6 @@ window.onload = function() {
 
             canvasCtx.lineWidth = 2;
             canvasCtx.strokeStyle = 'rgb(0, 255, 0)';
-
             canvasCtx.beginPath();
 
             const sliceWidth = WIDTH * 1.0 / bufferLength;
