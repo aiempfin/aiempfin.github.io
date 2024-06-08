@@ -13,6 +13,7 @@ body {
   background-color: #b3e0ff;
   border-radius: 50%;
   animation: pulse 1s infinite alternate;
+  animation-play-state: paused; /* Initially paused */
 }
 
 @keyframes pulse {
