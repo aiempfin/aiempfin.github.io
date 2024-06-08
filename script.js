@@ -1,7 +1,8 @@
+// script.js
+
 const startButton = document.getElementById('startButton');
 const visualizationCanvas = document.getElementById('visualizationCanvas');
 const canvasCtx = visualizationCanvas.getContext('2d');
-const transcriptDisplay = document.getElementById('transcriptDisplay'); // Added
 let audioContext;
 let analyser;
 let bufferLength;
@@ -26,9 +27,6 @@ startButton.addEventListener('click', () => {
 
   // Start drawing waveform
   drawWaveform();
-
-  // Start speech recognition
-  startSpeechRecognition();
 });
 
 function drawWaveform() {
@@ -70,19 +68,4 @@ function drawWaveform() {
   }
 
   draw();
-}
-
-function startSpeechRecognition() {
-  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-  recognition.lang = 'en-US';
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
-
-  recognition.onresult = (event) => {
-    const transcript = event.results[0][0].transcript;
-    console.log('Transcript:', transcript);
-    transcriptDisplay.textContent = transcript; // Update transcript display
-  };
-
-  recognition.start();
 }
