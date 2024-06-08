@@ -24,20 +24,28 @@ document.addEventListener('DOMContentLoaded', async () => {
   function render() {
     // Get frequency data
     const dataArray = new Uint8Array(bufferLength);
-    analyser.getByteFrequencyData(dataArray);
+    analyser.getByteTimeDomainData(dataArray);
 
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw visualization
-    const barWidth = (canvas.width / bufferLength) * 2.5;
+    // Draw robotic waveform visualization
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#00ccff';
+    ctx.beginPath();
+    const sliceWidth = canvas.width / bufferLength;
     let x = 0;
     for (let i = 0; i < bufferLength; i++) {
-      const barHeight = dataArray[i] / 2;
-      ctx.fillStyle = `rgb(${barHeight + 100}, 50, 50)`;
-      ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-      x += barWidth + 1;
+      const v = dataArray[i] / 128.0;
+      const y = (v * canvas.height) / 2;
+      if (i === 0) {
+        ctx.moveTo(x, y);
+      } else {
+        ctx.lineTo(x, y);
+      }
+      x += sliceWidth;
     }
+    ctx.stroke();
 
     // Call render function again
     requestAnimationFrame(render);
