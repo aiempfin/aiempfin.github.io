@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Adjust microphone size based on volume
     const scaleFactor = 1 + volume / 128;
-    microphone.style.transform = `scale(${scaleFactor})`;
+    microphone.style.transform = `scale3d(${scaleFactor}, ${scaleFactor}, 1)`;
 
     // Call render function again
     requestAnimationFrame(render);
